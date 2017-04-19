@@ -1,0 +1,75 @@
+{
+  "description": "Faithful Stage 3 Gentoo Installation (VirtualBox)",
+  "variables": {
+    "mirror": "http://distfiles.gentoo.org/releases/amd64/autobuilds/20170406/",
+    "iso": "install-amd64-minimal-20170406.iso",
+    "stage": "stage3-amd64-systemd-20170408.tar.bz2"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "headless": true,
+      "keep_registered": true,
+	  "skip_export": true,
+
+      "vm_name": "Gentoo",
+      "disk_size": 60000,
+      "hard_drive_interface": "sata",
+      "iso_interface": "sata",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--cpus", "4"]
+      ],
+      "guest_additions_mode": "disable",
+      "guest_os_type": "Gentoo_64",
+
+      "iso_checksum_url": "{{user `mirror`}}{{user `iso`}}.DIGESTS",
+      "iso_checksum_type": "sha512",
+      "iso_url": "{{user `iso`}}",
+
+      "boot_command": [
+        "gentoo-nofb nokeymap dosshd passwd=packer<enter>",
+        "<wait10>",
+        "<wait10>",
+        "<wait>"
+      ],
+      "boot_wait": "5s",
+
+      "ssh_username": "root",
+      "ssh_password": "packer",
+      "ssh_wait_timeout": "20s",
+
+      "shutdown_command": "shutdown -hP now"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "kernel.config",
+      "destination": "/tmp/kernel.config"
+    },
+    {
+      "type": "file",
+      "source": "{{user `stage`}}",
+      "destination": "/tmp/{{user `stage`}}"
+    },
+    {
+      "type": "shell",
+      "environment_vars": [
+        "STAGE={{user `stage`}}",
+        "VM_TYPE=virtualbox",
+        "SCRIPTS=/tmp"
+      ],
+      "scripts": [
+        "provision.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "compress",
+      "output": "gentoo.zip"
+    }
+  ]
+}
+
