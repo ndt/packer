@@ -9,7 +9,6 @@
     {
       "type": "virtualbox-iso",
       "headless": true,
-      "keep_registered": true,
 	  "skip_export": true,
 
       "vm_name": "Gentoo",
@@ -28,16 +27,12 @@
       "iso_url": "{{user `iso`}}",
 
       "boot_command": [
-        "gentoo-nofb nokeymap dosshd passwd=packer<enter>",
-        "<wait10>",
-        "<wait10>",
-        "<wait>"
+        "gentoo-nofb nokeymap dosshd passwd=packer<enter>"
       ],
       "boot_wait": "5s",
 
       "ssh_username": "root",
       "ssh_password": "packer",
-      "ssh_wait_timeout": "20s",
 
       "shutdown_command": "shutdown -hP now"
     }
@@ -47,6 +42,11 @@
       "type": "file",
       "source": "kernel.config",
       "destination": "/tmp/kernel.config"
+    },
+    {
+      "type": "file",
+      "source": "install.sh",
+      "destination": "/tmp/install.sh"
     },
     {
       "type": "file",

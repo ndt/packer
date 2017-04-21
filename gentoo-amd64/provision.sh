@@ -12,7 +12,7 @@ parted -a optimal --script /dev/sda -- \
 	unit mib \
 	mkpart primary 1 3 \
 	name 1 grub \
-	set 1 bios_grub on \
+	set 1 legacy_boot on \
 	mkpart primary 3 131 \
 	name 2 boot \
 	set 2 boot on \
@@ -34,21 +34,40 @@ mount /dev/sda4 /mnt/gentoo
 
 # extract stage archive
 cd /mnt/gentoo
-tar xjpf /tmp/$STAGE
+echo "extracting stage archive"
+tar xjpf /tmp/$STAGE --xattrs --numeric-owner
 rm -f $STAGE
 
-# mount partitions
-mount /dev/sda2 /mnt/gentoo/boot
-mount -t proc proc /mnt/gentoo/proc
-mount --rbind /dev /mnt/gentoo/dev
-mount --rbind /sys /mnt/gentoo/sys
+# adding gentoo repos
+mkdir /mnt/gentoo/etc/portage/repos.conf
+cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
 
 # copy resolf.conf
 cp -L /etc/resolv.conf /mnt/gentoo/etc/
-cp $SCRIPTS/kernel.config /mnt/gentoo/tmp/
-cp $SCRIPTS/install.sh /mnt/gentoo/tmp/
 
-chroot /mnt/gentoo /tmp/install.sh
+# copy kernel
+echo "copying kernel image and modules"
+mkdir /mnt/gentoo/etc/kernels
+cp /etc/kernels/* /mnt/gentoo/etc/kernels
+cp /mnt/cdrom/isolinux/gentoo{,.igz} /mnt/gentoo/boot
+mkdir -p /mnt/gentoo/lib/modules
+cp -Rp /lib/modules/`uname -r` /mnt/gentoo/lib/modules
+
+# mount partitions
+mount /dev/sda2 /mnt/gentoo/boot
+
+mount -t proc proc /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --make-rslave /mnt/gentoo/sys
+mount --rbind /dev /mnt/gentoo/dev
+mount --make-rslave /mnt/gentoo/dev
+
+cp $SCRIPTS/install.sh /mnt/gentoo/
+chmod +x /mnt/gentoo/install.sh
+ls -la /mnt/gentoo/
+sleep; sync; sleep
+
+chroot /mnt/gentoo /bin/bash -c "whoami"
 
 swapoff /dev/sda3
 dd if=/dev/zero of=/dev/sda3
