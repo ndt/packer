@@ -12,7 +12,7 @@
 	  "skip_export": true,
 
       "vm_name": "Gentoo",
-      "disk_size": 60000,
+      "disk_size": 16000,
       "hard_drive_interface": "sata",
       "iso_interface": "sata",
       "vboxmanage": [
@@ -68,7 +68,7 @@
   "post-processors": [
     {
       "type": "compress",
-      "output": "gentoo.tar.lz4"
+      "output": "gentoo.zip"
     }
   ]
 }

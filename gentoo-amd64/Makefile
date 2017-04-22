@@ -20,12 +20,14 @@ STAGE=$(notdir $(STAGE_RELPATH))
 
 
 # Don't go parallel
-.NOTPARALLEL:
+#.NOTPARALLEL:
 # Don't waste time searching for files
 .SUFFIXES:
 
 
 all: $(IMAGES)
+
+download: $(STAGE) $(ISO)
 
 .PHONY: $(ISO)
 $(ISO):
@@ -38,7 +40,7 @@ $(STAGE):
 	@wget --continue --no-verbose $(MIRROR)$(STAGE_RELPATH)
 
 $(IMAGES): $(STAGE) $(ISO)
-	packer build \
+	PACKER_LOG=1 PACKER_LOG_PATH="packer.log" packer build \
 		-on-error=ask \
 		-var "mirror=$(MIRROR)$(dir $(ISO_RELPATH))" \
 		-var "iso=$(ISO)" \

@@ -62,12 +62,10 @@ mount --make-rslave /mnt/gentoo/sys
 mount --rbind /dev /mnt/gentoo/dev
 mount --make-rslave /mnt/gentoo/dev
 
-cp $SCRIPTS/install.sh /mnt/gentoo/
-chmod +x /mnt/gentoo/install.sh
-ls -la /mnt/gentoo/
-sleep; sync; sleep
+cp $SCRIPTS/install.sh /mnt/gentoo/tmp/
+chmod +x /mnt/gentoo/tmp/install.sh
 
-chroot /mnt/gentoo /bin/bash -c "whoami"
+chroot /mnt/gentoo /tmp/install.sh
 
 swapoff /dev/sda3
 dd if=/dev/zero of=/dev/sda3
