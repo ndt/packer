@@ -1,5 +1,5 @@
 #!/bin/bash
-EMERGE='emerge -j2 --buildpkg'
+EMERGE='emerge -j4 --buildpkg'
 
 source /etc/profile
 export PS1="(chroot) $PS1"
@@ -22,13 +22,20 @@ emerge --config sys-libs/timezone-data
 
 # configure locales
 sed -i 's/^#en_US/en_US/;s/#de_DE/de_DE/' /etc/locale.gen
-echo "de_DE.utf-8 utf-8" >> /etc/locale.gen
+echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
 eselect locale set de_DE.utf8
 env-update && source /etc/profile && export PS1="(chroot) $PS1"
 
 # install boot packages
-MAKEOPTS='-j5' $EMERGE sys-boot/syslinux sys-kernel/gentoo-sources sys-kernel/genkernel-next
+$EMERGE sys-boot/syslinux sys-kernel/gentoo-sources sys-kernel/genkernel-next
+
+# configure kernel
+cd /usr/src/linux
+cp /tmp/.config.gz .
+gunzip .config.gz
+make oldconfig
+make modules_prepare
 
 # install syslinux
 dd bs=440 conv=notrunc count=1 if=/usr/share/syslinux/gptmbr.bin of=/dev/sda
@@ -49,8 +56,8 @@ LABEL gentoo
 DATA
 
 # emerge packages
-MAKEOPTS='-j5' $EMERGE @world -uDN
-MAKEOPTS='-j5' $EMERGE app-emulation/virtualbox-guest-additions
+$EMERGE @world -uDN
+$EMERGE ">app-emulation/virtualbox-guest-additions-5.1.0" --autounmask-write
 
 # clean up
 emerge --depclean

@@ -49,6 +49,7 @@ cp -L /etc/resolv.conf /mnt/gentoo/etc/
 echo "copying kernel image and modules"
 mkdir /mnt/gentoo/etc/kernels
 cp /etc/kernels/* /mnt/gentoo/etc/kernels
+cp /proc/config.gz /mnt/gentoo/tmp/.config.gz
 cp /mnt/cdrom/isolinux/gentoo{,.igz} /mnt/gentoo/boot
 mkdir -p /mnt/gentoo/lib/modules
 cp -Rp /lib/modules/`uname -r` /mnt/gentoo/lib/modules

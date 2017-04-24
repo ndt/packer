@@ -9,15 +9,16 @@
     {
       "type": "virtualbox-iso",
       "headless": true,
-	  "skip_export": true,
+      "skip_export": false,
 
       "vm_name": "Gentoo",
       "disk_size": 16000,
       "hard_drive_interface": "sata",
       "iso_interface": "sata",
       "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--cpus", "4"],
         ["modifyvm", "{{.Name}}", "--memory", "2048"],
-        ["modifyvm", "{{.Name}}", "--cpus", "4"]
+        ["modifyvm", "{{.Name}}", "--vram", "48"]
       ],
       "guest_additions_mode": "disable",
       "guest_os_type": "Gentoo_64",
@@ -63,6 +64,12 @@
       "scripts": [
         "provision.sh"
       ]
+    },
+    {
+      "type": "file",
+      "source": "/usr/portage/packages/",
+      "destination": "./packages",
+      "direction": "download"
     }
   ],
   "post-processors": [
