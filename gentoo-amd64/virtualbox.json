@@ -46,6 +46,11 @@
     },
     {
       "type": "file",
+      "source": "packages",
+      "destination": "/tmp"
+    },
+    {
+      "type": "file",
       "source": "install.sh",
       "destination": "/tmp/install.sh"
     },
@@ -67,7 +72,7 @@
     },
     {
       "type": "file",
-      "source": "/usr/portage/packages/",
+      "source": "/mnt/gentoo/usr/portage/packages/",
       "destination": "./packages",
       "direction": "download"
     }

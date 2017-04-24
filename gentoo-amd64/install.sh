@@ -1,5 +1,5 @@
 #!/bin/bash
-EMERGE='emerge -j4 --buildpkg'
+EMERGE='emerge -j4 --buildpkg --usepkg'
 
 source /etc/profile
 export PS1="(chroot) $PS1"
@@ -56,8 +56,8 @@ LABEL gentoo
 DATA
 
 # emerge packages
-$EMERGE @world -uDN
 $EMERGE ">app-emulation/virtualbox-guest-additions-5.1.0" --autounmask-write
+$EMERGE @world -uDN
 
 # clean up
 emerge --depclean
