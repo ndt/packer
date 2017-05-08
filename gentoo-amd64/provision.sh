@@ -6,9 +6,6 @@ then
   exit 1
 fi
 
-ls -la /tmp
-ls -la /tmp/packages
-
 # partition disks
 parted -a optimal --script /dev/sda -- \
 	mklabel gpt \
@@ -37,13 +34,14 @@ mount /dev/sda4 /mnt/gentoo
 
 # extract stage archive
 cd /mnt/gentoo
-echo "extracting stage archive"
+echo "*** extract stage archive"
 tar xjpf /tmp/$STAGE --xattrs --numeric-owner
 rm -f $STAGE
 
 # copy packages
+echo "*** copy packages"
 mkdir -p /mnt/gentoo/usr/portage/packages
-cp /tmp/packages /mnt/gentoo/usr/portage/packages
+cp -r /tmp/packages/* /mnt/gentoo/usr/portage/packages
 
 # adding gentoo repos
 mkdir /mnt/gentoo/etc/portage/repos.conf
@@ -53,7 +51,7 @@ cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos
 cp -L /etc/resolv.conf /mnt/gentoo/etc/
 
 # copy kernel
-echo "copying kernel image and modules"
+echo "*** copy kernel image and modules"
 mkdir /mnt/gentoo/etc/kernels
 cp /etc/kernels/* /mnt/gentoo/etc/kernels
 cp /proc/config.gz /mnt/gentoo/tmp/.config.gz

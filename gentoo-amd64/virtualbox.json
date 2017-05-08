@@ -46,7 +46,7 @@
     },
     {
       "type": "file",
-      "source": "packages",
+      "source": "./packages",
       "destination": "/tmp"
     },
     {

@@ -57,6 +57,8 @@ DATA
 
 # emerge packages
 $EMERGE ">app-emulation/virtualbox-guest-additions-5.1.0" --autounmask-write
+etc-update --automode -3
+$EMERGE ">app-emulation/virtualbox-guest-additions-5.1.0" --autounmask-write
 $EMERGE @world -uDN
 
 # clean up
