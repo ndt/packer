@@ -46,7 +46,7 @@
     },
     {
       "type": "file",
-      "source": "./packages",
+      "source": "packages",
       "destination": "/tmp"
     },
     {
@@ -73,7 +73,7 @@
     {
       "type": "file",
       "source": "/mnt/gentoo/usr/portage/packages/",
-      "destination": "./packages",
+      "destination": "packages",
       "direction": "download"
     }
   ],

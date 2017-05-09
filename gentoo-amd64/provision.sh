@@ -31,6 +31,8 @@ mkswap /dev/sda3 && swapon /dev/sda3
 
 # mount system partition
 mount /dev/sda4 /mnt/gentoo
+mkdir /mnt/gentoo/boot
+mount /dev/sda2 /mnt/gentoo/boot
 
 # extract stage archive
 cd /mnt/gentoo
