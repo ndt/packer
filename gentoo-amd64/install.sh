@@ -34,8 +34,9 @@ $EMERGE sys-boot/syslinux sys-kernel/gentoo-sources sys-kernel/genkernel-next
 cd /usr/src/linux
 cp /tmp/.config.gz .
 gunzip .config.gz
-make oldconfig
-make modules_prepare
+#make oldconfig
+#make modules_prepare
+genkernel --oldconfig --install all
 
 # install syslinux
 dd bs=440 conv=notrunc count=1 if=/usr/share/syslinux/gptmbr.bin of=/dev/sda
@@ -50,9 +51,9 @@ cp menu.c32 memdisk libcom32.c32 libutil.c32 /boot/extlinux
 cat > /boot/extlinux/extlinux.conf <<'DATA'
 DEFAULT gentoo
 LABEL gentoo
-	LINUX /boot/kernel
-	INITRD /boot/initramfs
+	LINUX ../kernel
 	APPEND root=/dev/sda4
+	INITRD ../initramfs
 DATA
 
 # emerge packages

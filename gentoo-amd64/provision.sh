@@ -42,8 +42,10 @@ rm -f $STAGE
 
 # copy packages
 echo "*** copy packages"
+ls -laR /tmp/
 mkdir -p /mnt/gentoo/usr/portage/packages
 cp -r /tmp/packages/* /mnt/gentoo/usr/portage/packages
+ls -laR /mnt/gentoo/usr/portage/packages/
 
 # adding gentoo repos
 mkdir /mnt/gentoo/etc/portage/repos.conf
@@ -57,23 +59,25 @@ echo "*** copy kernel image and modules"
 mkdir /mnt/gentoo/etc/kernels
 cp /etc/kernels/* /mnt/gentoo/etc/kernels
 cp /proc/config.gz /mnt/gentoo/tmp/.config.gz
-cp /mnt/cdrom/isolinux/gentoo{,.igz} /mnt/gentoo/boot
+cp /mnt/cdrom/isolinux/gentoo /mnt/gentoo/boot/kernel
+cp /mnt/cdrom/isolinux/gentoo.igz /mnt/gentoo/boot/initramfs
 mkdir -p /mnt/gentoo/lib/modules
 cp -Rp /lib/modules/`uname -r` /mnt/gentoo/lib/modules
 
 # mount partitions
-mount /dev/sda2 /mnt/gentoo/boot
-
 mount -t proc proc /mnt/gentoo/proc
 mount --rbind /sys /mnt/gentoo/sys
 mount --make-rslave /mnt/gentoo/sys
 mount --rbind /dev /mnt/gentoo/dev
 mount --make-rslave /mnt/gentoo/dev
 
+cp $SCRIPTS/prepare.sh /mnt/gentoo/
 cp $SCRIPTS/install.sh /mnt/gentoo/tmp/
 chmod +x /mnt/gentoo/tmp/install.sh
 
 chroot /mnt/gentoo /tmp/install.sh
+
+ls -laR /mnt/gentoo/usr/portage/packages/
 
 swapoff /dev/sda3
 dd if=/dev/zero of=/dev/sda3

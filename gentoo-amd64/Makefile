@@ -8,6 +8,7 @@ ISO_LATEST=latest-install-amd64-minimal
 STAGE_LATEST=latest-stage3-amd64-systemd
 
 
+PACKAGE_DIR=packages
 ISO_RELPATH=$(shell curl -s $(MIRROR)$(ISO_LATEST).txt | \
 	tail -1 | \
 	cut -d " " -f 1)
@@ -29,6 +30,9 @@ all: $(IMAGES)
 
 download: $(STAGE) $(ISO)
 
+$(PACKAGE_DIR):
+	mkdir packages
+
 .PHONY: $(ISO)
 $(ISO):
 	@echo Downloading stage: "$(ISO)"
@@ -39,7 +43,7 @@ $(STAGE):
 	@echo Downloading stage: "$(STAGE)"
 	@wget --continue --no-verbose $(MIRROR)$(STAGE_RELPATH)
 
-$(IMAGES): $(STAGE) $(ISO)
+$(IMAGES): $(STAGE) $(ISO) $(PACKAGE_DIR)
 	PACKER_LOG=1 PACKER_LOG_PATH="packer.log" packer build \
 		-on-error=ask \
 		-var "mirror=$(MIRROR)$(dir $(ISO_RELPATH))" \
@@ -49,4 +53,5 @@ $(IMAGES): $(STAGE) $(ISO)
 
 .PHONY: clean
 clean:
-	rm stage3-*.tar.bz2
+	$(RM) stage3-*.tar.bz2
+	$(RM) install-*.iso

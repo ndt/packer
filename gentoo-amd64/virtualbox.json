@@ -56,6 +56,11 @@
     },
     {
       "type": "file",
+      "source": "prepare.sh",
+      "destination": "/tmp/prepare.sh"
+    },
+    {
+      "type": "file",
       "source": "{{user `stage`}}",
       "destination": "/tmp/{{user `stage`}}"
     },
@@ -73,7 +78,7 @@
     {
       "type": "file",
       "source": "/mnt/gentoo/usr/portage/packages/",
-      "destination": "packages",
+      "destination": "packages/",
       "direction": "download"
     }
   ],
