@@ -2,7 +2,7 @@
   "builders": [
     {
       "type": "virtualbox-iso",
-	  "name": "CentOS7",
+	    "name": "CentOS7",
 
       "guest_os_type": "RedHat_64",
       "disk_size": 40520,
@@ -14,7 +14,7 @@
       "iso_checksum": "bba314624956961a2ea31dd460cd860a77911c1e0a56e4820a12b9c5dad363f5",
       "iso_checksum_type": "sha256",
       "iso_url": "http://ftp.rrzn.uni-hannover.de/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1708.iso",
-	  "iso_interface": "sata",
+	    "iso_interface": "sata",
 
       "guest_additions_url": "http://download.virtualbox.org/virtualbox/5.2.4/VBoxGuestAdditions_5.2.4.iso",
       "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
@@ -31,7 +31,7 @@
       "ssh_wait_timeout": "600s",
 
       "virtualbox_version_file": ".vbox_version",
-	  "keep_registered": "true"
+	    "keep_registered": "true"
     }
   ],
   "provisioners": [
@@ -39,7 +39,7 @@
       "type": "shell",
       "scripts": [
          "scripts/base.sh",
-		 "scripts/virtualbox.sh",
+		     "scripts/virtualbox.sh",
          "scripts/cleanup.sh"
       ]
     }

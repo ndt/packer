@@ -13,18 +13,11 @@
     "ssh_username": "packer",
     "ssh_password": "packer"
   },
-  "provisioners": [
-    {
-      "type": "shell",
-      "inline": "echo hello"
-    }
-  ],
   "builders": [
     {
       "type": "virtualbox-iso",
       "headless": false,
       "vm_name": "{{user `vm_name`}}",
-      "format": "ova",
       "guest_os_type": "Linux26_64",
       "guest_additions_mode": "disable",
       "disk_size": "{{user `disk_size`}}",
@@ -35,34 +28,17 @@
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "http_directory": "http",
-      "communicator": "ssh",
       "ssh_username": "{{user `ssh_username`}}",
       "ssh_password": "{{user `ssh_password`}}",
       "ssh_wait_timeout": "10m",
       "shutdown_command": "echo {{user `ssh_password`}} | sudo -S /sbin/poweroff",
-      "boot_wait": "30s",
+      "boot_wait": "10s",
       "boot_command": [
         "root<enter><wait>",
-        "ifconfig eth0 up && udhcpc -i eth0<enter><wait10>",
-        "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/answers<enter><wait>",
-        "setup-alpine -f $PWD/answers<enter><wait5>",
-        "{{user `root_password`}}<enter><wait>",
-        "{{user `root_password`}}<enter><wait>",
-        "<wait10>y<enter>",
-        "<wait10><wait10>",
-        "<wait10><wait10>",
-        "<wait10><wait10>",
-        "reboot<enter>",
-        "<wait10><wait10><wait10>",
-        "root<enter><wait5>",
-        "{{user `root_password`}}<enter>",
-        "apk add sudo<enter><wait5>",
-        "echo 'Defaults env_keep += \"http_proxy https_proxy\"' > /etc/sudoers.d/wheel<enter>",
-        "echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers.d/wheel<enter>",
-        "adduser {{user `ssh_username`}}<enter>",
-        "{{user `ssh_password`}}<enter>",
-        "{{user `ssh_password`}}<enter>",
-        "adduser {{user `ssh_username`}} wheel<enter>"
+        "ifconfig eth0 up && udhcpc -i eth0<enter><wait5>",
+        "apk add openssh-server<enter><wait5>",
+        "echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config<enter>",
+        "/etc/init.d/sshd start<enter>"
       ],
       "hard_drive_interface": "sata",
       "vboxmanage": [
@@ -85,6 +61,19 @@
           "on"
         ]
       ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "provision.sh"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "/bin/sh '{{.Path}}'"
+        }
+      }
     }
   ]
 }
