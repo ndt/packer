@@ -1,16 +1,18 @@
 #!/bin/sh
 
-wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/answers
+ERASE_DISKS="/dev/sda"
+setup-alpine  -e -f /tmp/answers
 
-setup-alpine -f $PWD/answers
-{{user `root_password`}}
-{{user `root_password`}}
-y
+echo "ready"
+
+sleep 300
+
 reboot
+
 root
 {{user `root_password`}}
+
 apk add sudo
-echo 'Defaults env_keep += \"http_proxy https_proxy\"' > /etc/sudoers.d/wheel
 echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers.d/wheel
 adduser {{user `ssh_username`}}
 {{user `ssh_password`}}
