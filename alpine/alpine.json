@@ -5,10 +5,12 @@
     "cpus": "1",
     "memory": "1024",
     "disk_size": "10240",
+
     "iso_local_url": "../../isos/alpine-virt-3.8.0-x86_64.iso",
     "iso_download_url": "http://dl-cdn.alpinelinux.org/alpine/v3.8/releases/x86_64/alpine-virt-3.8.0-x86_64.iso",
     "iso_checksum": "c0daab130ff32399bfce8893d7f6c591078ce8f87e82a2b987f8832fa6cf2d76",
     "iso_checksum_type": "sha256",
+    
     "ssh_username": "root",
     "ssh_password": "packer"
   },
@@ -19,7 +21,14 @@
       "vm_name": "{{user `vm_name`}}",
       "guest_os_type": "Linux26_64",
       "guest_additions_mode": "disable",
+      "hard_drive_interface": "sata",
       "disk_size": "{{user `disk_size`}}",
+      "vboxmanage": [
+        ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"],
+        ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
+        ["modifyvm", "{{.Name}}", "--vram", "10"],
+        ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"]
+      ],
       "iso_urls": [
         "{{user `iso_local_url`}}",
         "{{user `iso_download_url`}}"
@@ -29,54 +38,26 @@
       "http_directory": "http",
       "ssh_username": "{{user `ssh_username`}}",
       "ssh_password": "{{user `ssh_password`}}",
-      "ssh_wait_timeout": "600s",
-      "boot_wait": "10s",
       "boot_command": [
         "root<enter>",
         "ifconfig eth0 up && udhcpc -i eth0<enter><wait3>",
-        "wget http://{{ .HTTPIP }}:{{ .HTTPPort }}/answers<enter>",
         "wget -O - http://{{ .HTTPIP }}:{{ .HTTPPort }}/init.sh | /bin/sh<enter>"
       ],
-      "shutdown_command": "/sbin/poweroff",
-      "hard_drive_interface": "sata",
-      "vboxmanage": [
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--memory",
-          "{{user `memory`}}"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--cpus",
-          "{{user `cpus`}}"
-        ],
-        [
-          "modifyvm",
-          "{{.Name}}",
-          "--rtcuseutc",
-          "on"
-        ]
-      ]
+      "shutdown_command": "/sbin/poweroff"
     }
   ],
   "provisioners": [
     {
-      "type": "file",
-      "source": "http/answers",
-      "destination": "/tmp/answers"
-    },
-    {
       "type": "shell",
       "scripts": [
-        "ansible.sh"
-      ],
-      "override": {
-        "virtualbox-iso": {
-          "execute_command": "/bin/sh '{{.Path}}'"
-        }
-      }
+        "scripts/ansible.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "compress",
+      "output": "{{.BuildName}}.tar.xz"
     }
   ]
 }
