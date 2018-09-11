@@ -10,7 +10,7 @@
     "iso_download_url": "http://dl-cdn.alpinelinux.org/alpine/v3.8/releases/x86_64/alpine-virt-3.8.0-x86_64.iso",
     "iso_checksum": "c0daab130ff32399bfce8893d7f6c591078ce8f87e82a2b987f8832fa6cf2d76",
     "iso_checksum_type": "sha256",
-    
+
     "ssh_username": "root",
     "ssh_password": "packer"
   },
@@ -26,7 +26,7 @@
       "vboxmanage": [
         ["modifyvm", "{{.Name}}", "--cpus", "{{user `cpus`}}"],
         ["modifyvm", "{{.Name}}", "--memory", "{{user `memory`}}"],
-        ["modifyvm", "{{.Name}}", "--vram", "10"],
+        ["modifyvm", "{{.Name}}", "--vram", "48"],
         ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"]
       ],
       "iso_urls": [
@@ -57,7 +57,7 @@
   "post-processors": [
     {
       "type": "compress",
-      "output": "{{.BuildName}}.tar.xz"
+      "output": "{{.Name}}_{{.BuildName}}.tar.gz"
     }
   ]
 }
