@@ -12,6 +12,13 @@ iface lo inet loopback
 auto eth0
 iface eth0 inet dhcp
 "
+#auto eth0
+#iface eth0 inet static
+#      address 10.0.66.2
+#      netmask 255.255.255.0
+#      gateway 10.0.66.1
+#      hostname alpine-kernel-dev
+
 APKREPOSOPTS="http://dl-cdn.alpinelinux.org/alpine/v3.8/main"
 
 #

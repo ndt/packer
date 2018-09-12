@@ -14,6 +14,7 @@
     "ssh_username": "root",
     "ssh_password": "packer"
   },
+  
   "builders": [
     {
       "type": "virtualbox-iso",
@@ -21,6 +22,7 @@
       "vm_name": "{{user `vm_name`}}",
       "guest_os_type": "Linux26_64",
       "guest_additions_mode": "disable",
+      "iso_interface": "sata",
       "hard_drive_interface": "sata",
       "disk_size": "{{user `disk_size`}}",
       "vboxmanage": [
@@ -46,6 +48,7 @@
       "shutdown_command": "/sbin/poweroff"
     }
   ],
+  
   "provisioners": [
     {
       "type": "shell",
@@ -54,10 +57,11 @@
       ]
     }
   ],
+  
   "post-processors": [
     {
       "type": "compress",
-      "output": "{{.Name}}_{{.BuildName}}.tar.gz"
+      "output": "{{user `vm_name`}}_{{.BuildName}}.tar.gz"
     }
   ]
 }

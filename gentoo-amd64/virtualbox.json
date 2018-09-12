@@ -85,7 +85,7 @@
   "post-processors": [
     {
       "type": "compress",
-      "output": "gentoo.zip"
+      "output": "gentoo.tar.xz"
     }
   ]
 }
