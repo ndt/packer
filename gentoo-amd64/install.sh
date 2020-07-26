@@ -5,7 +5,7 @@ source /etc/profile
 export PS1="(chroot) $PS1"
 
 # sync portage
-emerge-webrsync
+emerge --sync
 
 # create fstab
 cat > /etc/fstab <<'DATA'
@@ -28,39 +28,40 @@ eselect locale set de_DE.utf8
 env-update && source /etc/profile && export PS1="(chroot) $PS1"
 
 # install boot packages
-$EMERGE sys-boot/syslinux sys-kernel/gentoo-sources sys-kernel/genkernel-next
+$EMERGE --autounmask-write sys-kernel/{gentoo-kernel-bin,linux-firmware}
 
 # configure kernel
-cd /usr/src/linux
-cp /tmp/.config.gz .
-gunzip .config.gz
-#make oldconfig
-#make modules_prepare
-genkernel --oldconfig --install all
+#cd /usr/src/linux
+#cp /tmp/.config.gz .
+#gunzip .config.gz
+##make oldconfig
+##make modules_prepare
+#genkernel --oldconfig --install all
 
 # install syslinux
-dd bs=440 conv=notrunc count=1 if=/usr/share/syslinux/gptmbr.bin of=/dev/sda
-cd /boot
-mkdir /boot/extlinux
-extlinux --install /boot/extlinux
-ln -snf . /boot/boot
-
-cd /usr/share/syslinux
-cp menu.c32 memdisk libcom32.c32 libutil.c32 /boot/extlinux
-
-cat > /boot/extlinux/extlinux.conf <<'DATA'
-DEFAULT gentoo
-LABEL gentoo
-	LINUX ../kernel
-	APPEND root=/dev/sda4
-	INITRD ../initramfs
-DATA
+#dd bs=440 conv=notrunc count=1 if=/usr/share/syslinux/gptmbr.bin of=/dev/sda
+#cd /boot
+#mkdir /boot/extlinux
+#extlinux --install /boot/extlinux
+#ln -snf . /boot/boot
+#
+#cd /usr/share/syslinux
+#cp menu.c32 memdisk libcom32.c32 libutil.c32 /boot/extlinux
+#
+#cat > /boot/extlinux/extlinux.conf <<'DATA'
+#DEFAULT gentoo
+#LABEL gentoo
+#	LINUX ../kernel
+#	APPEND root=/dev/sda4
+#	INITRD ../initramfs
+#DATA
 
 # emerge packages
 $EMERGE ">app-emulation/virtualbox-guest-additions-5.1.0" --autounmask-write
 etc-update --automode -3
 $EMERGE ">app-emulation/virtualbox-guest-additions-5.1.0" --autounmask-write
 $EMERGE @world -uDN
+$EMERGE @preserved-rebuild
 
 # clean up
 emerge --depclean

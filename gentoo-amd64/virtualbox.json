@@ -41,11 +41,6 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "kernel.config",
-      "destination": "/tmp/kernel.config"
-    },
-    {
-      "type": "file",
       "source": "packages",
       "destination": "/tmp"
     },
@@ -85,7 +80,10 @@
   "post-processors": [
     {
       "type": "compress",
-      "output": "gentoo.tar.xz"
+      "output": "gentoo.tar.lz4"
+    },
+    {
+      "type": "vagrant"
     }
   ]
 }
