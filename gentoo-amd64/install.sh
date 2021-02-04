@@ -5,7 +5,7 @@ source /etc/profile
 export PS1="(chroot) $PS1"
 
 # sync portage
-emerge --sync
+emerge --sync --quiet
 
 # create fstab
 cat > /etc/fstab <<'DATA'
